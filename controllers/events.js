@@ -61,10 +61,16 @@ var getByActor = async (req, res) => {
 
 
 var eraseEvents = (req, res) => {
-	EventModel.destroy()
-		.then(function (event) {
-			res.status(200);
+	EventModel.destroy({
+		where: {},
+		truncate: true,
+	}).then(function (event) {
+		res.status(200).json({
+			message: 'Events Successfully Deleted'
 		});
+	}).catch(err => {
+		console.log('err', err)
+	});
 };
 
 module.exports = {
