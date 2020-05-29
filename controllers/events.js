@@ -10,7 +10,7 @@ var getAllEvents = async (req, res) => {
 			raw: true,
 			order: [["id", "ASC"]],
 		});
-		res.status(200).json({ allEvents });
+		res.status(200).json(allEvents);
 		
 	} catch (error) {
 		console.log('error: ', error)
@@ -36,7 +36,7 @@ var addEvent = async (req, res) => {
 			repoId: req.body.repo.id,
 		});
 
-		res.status(201).json({newEvent})
+		res.status(201).json(newEvent)
 
 	} catch (error) {
 		console.log('error', error)
@@ -44,8 +44,19 @@ var addEvent = async (req, res) => {
 };
 
 
-var getByActor = () => {
-
+var getByActor = async (req, res) => {
+	try {
+		const actor = await ActorModel.findAll({ where: { id: req.params.actorID } });
+		if (actor.length === 0) return res.status(404).json({message: 'actor not found'})
+		const allEvents = await EventModel.findAll({
+			raw: true,
+			where: { actorId: req.params.actorID },
+			order: [["id", "ASC"]],
+		});
+		res.status(200).json(allEvents);
+	} catch (error) {
+		console.log('error', error);
+	}
 };
 
 
